@@ -2,25 +2,30 @@ package com.estoque.sistemaestoque.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "fornecedores")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Fornecedor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, unique = true)
     private String nome;
 
-    @Column(nullable = false, unique = true, length = 14) // CNPJ é único
     private String cnpj;
 
-    @Column(length = 20)
     private String telefone;
 
-    @Column(length = 100)
-    private String email;
+    // Relacionamento One-to-Many com Produto
+    @OneToMany(mappedBy = "fornecedor", fetch = FetchType.LAZY)
+    private java.util.List<Produto> produtos;
 }

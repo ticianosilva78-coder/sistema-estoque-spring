@@ -2,7 +2,10 @@ package com.estoque.sistemaestoque.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -10,30 +13,30 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "produtos")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Produto {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false, length = 50)
-    private String categoria;
+    private String descricao;
 
+    // Campo para o controle de estoque
     @Column(nullable = false)
-    private Integer quantidade = 0; // Estoque atual
+    private Integer quantidadeEstoque = 0; // Inicializa com 0
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal preco; // Tipo para valores monetários
-
-    @Column(nullable = false)
-    private Integer estoqueMinimo = 0;
-
-    // Relacionamento ManyToOne: Muitos Produtos pertencem a UM Fornecedor
-    @ManyToOne
-    @JoinColumn(name = "fornecedor_id", nullable = false) // Coluna da chave estrangeira no BD
+    // Relacionamento Many-to-One com Fornecedor (Chave Estrangeira)
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER para carregar o fornecedor junto com o produto
+    @JoinColumn(name = "fornecedor_id", nullable = false)
     private Fornecedor fornecedor;
+
+    // Relacionamento One-to-Many com MovimentacaoEstoque
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private java.util.List<MovimentacaoEstoque> movimentacoes;
 
 }

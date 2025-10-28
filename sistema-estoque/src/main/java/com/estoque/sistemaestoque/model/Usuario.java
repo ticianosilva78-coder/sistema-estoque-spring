@@ -2,28 +2,34 @@ package com.estoque.sistemaestoque.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 @Entity
-@Data
 @Table(name = "usuarios")
-public class Usuario {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
-    @Id // Define como chave primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento do PostgreSQL
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String nome;
-
-    @Column(nullable = false, unique = true, length = 150)
-    private String email;
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
-    private String senha; // Será hasheada em um sistema seguro
+    private String password; // Em um sistema real, use criptografia!
 
-    @Column(nullable = false, length = 50)
-    private String role; // Ex: ADMIN, USER
+    @Column(nullable = false)
+    private String role; // Ex: ADMIN, ESTOQUISTA, etc.
+
+    // Relacionamento One-to-Many com MovimentacaoEstoque
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private java.util.List<MovimentacaoEstoque> movimentacoes;
 
 }

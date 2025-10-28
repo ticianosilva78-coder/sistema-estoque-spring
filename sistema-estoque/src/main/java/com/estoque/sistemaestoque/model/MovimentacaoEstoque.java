@@ -3,39 +3,44 @@ package com.estoque.sistemaestoque.model;
 
 import jakarta.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "movimentacoes_estoque")
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MovimentacaoEstoque {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
-    @Column(nullable = false)
-    private LocalDateTime data = LocalDateTime.now(); // Data e hora do registro
 
     @Column(nullable = false)
     private Integer quantidade;
 
-    // Mapeia o ENUM como String no banco de dados para clareza
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private TipoMovimentacao tipo;
+    @Column(nullable = false)
+    private LocalDateTime dataHora;
 
-    // Relacionamento ManyToOne com Produto
+    // Relacionamento Many-to-One com Produto
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    // Relacionamento ManyToOne com Usuário (quem realizou a movimentação)
+    // Relacionamento Many-to-One com TipoMovimentacao
+    @ManyToOne
+    @JoinColumn(name = "tipo_movimentacao_id", nullable = false)
+    private TipoMovimentacao tipoMovimentacao;
+
+    // Relacionamento Many-to-One com Usuario
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+    }
 
-}
+
